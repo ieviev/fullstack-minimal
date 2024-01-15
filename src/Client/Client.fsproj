@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <!-- mark that this is a fable project for the tooling -->
+        <DefineConstants>FABLE_COMPILER</DefineConstants>
+    </PropertyGroup>
+    <ItemGroup>
+        <Compile Include="Client.fs" />
+    </ItemGroup>
+    <ItemGroup>
+        <!-- most of these dependencies are not really needed -->
+        <PackageReference Include="Fable.Browser.Css" Version="2.3.0" />
+        <PackageReference Include="Fable.Browser.IndexedDB" Version="1.0.0" />
+        <PackageReference Include="Fable.Browser.Navigator" Version="2.4.0" />
+        <PackageReference Include="Fable.Browser.Url" Version="1.3.2" />
+        <PackageReference Include="Fable.Browser.WebStorage" Version="1.2.0" />
+        <PackageReference Include="Fable.Elmish.HMR" Version="7.0.0" />
+        <!-- search fable.browser in NuGet for other dependencies if needed  -->
+        <PackageReference Include="Fable.Elmish.React" Version="4.0.0" />
+        <PackageReference Include="Fable.Elmish" Version="4.0.1" />
+        <PackageReference Include="Fable.FontAwesome.Free" Version="2.1.0" />
+        <PackageReference Include="Fable.JsonProvider" Version="1.1.1" />
+        <PackageReference Include="Fable.Remoting.Client" Version="7.25.0" />
+        <PackageReference Include="Feliz.Bulma" Version="3.0.0" />
+        <PackageReference Include="Feliz.Router" Version="4.0.0" />
+        <PackageReference Include="Feliz" Version="2.4.1" />
+        <PackageReference Include="Thoth.Fetch" Version="3.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="index.html" />
+
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Shared\Shared.fsproj" />
+    </ItemGroup>
+</Project>
