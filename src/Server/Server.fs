@@ -38,25 +38,32 @@ let todosApi: Shared.ITodosApi = {
     addTodo =
         fun todo -> async {
             stdout.WriteLine $"server received addTodo: %A{todo}"
-            return (Storage.addTodo todo)
+
+            match Storage.addTodo todo with
+            | Ok result -> return result
+            | Error ex -> return failwith ex.Message
         }
-    removeTodo = (fun guid -> async { return (Storage.tryRemoveTodo guid) })
+    removeTodo =
+        (fun guid -> async {
+            match Storage.tryRemoveTodo guid with
+            | Ok result -> return result
+            | Error ex -> return failwith ex.Message
+        })
 }
 
 let apiHttpHandler: Giraffe.Core.HttpHandler =
     Remoting.createApi ()
     // |> Remoting.withRouteBuilder (fun typeName methodName -> sprintf $"/customApiUrl/%s{typeName}/%s{methodName}")
-    // |> Remoting.withBinarySerialization // replaces json with msgpack
+    // |> Remoting.withBinarySerialization // replaces json with msgpack; make sure to change this in both server and client
     |> Remoting.fromValue todosApi
     |> Remoting.buildHttpHandler
 
 let appRouter = router {
     pipe_through (Giraffe.Core.setHttpHeader "SomeHeader" "123")
-    // pipe_through (requireHeader "Accept" "asd")
     forward "/api" apiHttpHandler
 }
 
-let app: Microsoft.Extensions.Hosting.IHostBuilder = application {
+let app = application {
     use_router appRouter
     memory_cache
 

@@ -11,22 +11,8 @@ open Elmish
 // the state of the application
 type Model = { Todos: Todo list; Input: string }
 
-// type ErasedPersonProvider = 
-//     Fable.JsonProvider.Generator<"""
-//     {
-//         "name" : "john",
-//         "age" : 100,
-//         "favColors" : [ "red","green","blue" ]
-//     }
-//     """>
-
-// let readPerson (json:string) = 
-//     let person = ErasedPersonProvider(json)
-//     let agein5years = person.age + 5.
-//     console.log(person.name)
-
+// messages that can be sent to the update function
 type Msg =
-    // | UpdateModel of newModel:Model // if you don't need granularity
     | SetInput of string
     | RemoveTodo of System.Guid
     | AddTodo // <- starts async request to the server
@@ -35,7 +21,7 @@ type Msg =
     | GotRemoveTodoResponse of System.Guid
     | GotError of exn
 
-// create the entire API based on specification in Shared.fs
+// communication to the API based on specification in Shared.fs
 let todosApi =
     Remoting.createApi ()
 #if DEBUG
@@ -43,7 +29,7 @@ let todosApi =
 #else
     |> Remoting.withBaseUrl "/api"
 #endif
-    // |> Remoting.withBinarySerialization // replaces json with msgpack for production
+    // |> Remoting.withBinarySerialization // replaces json with binary for production; // replaces json with msgpack; make sure to change this in both server and client
     |> Remoting.buildProxy<ITodosApi>
 
 // the application itself consists of a model, a view for the model state and a way to update the model
@@ -60,7 +46,6 @@ let init() : Model * Cmd<Msg> =
             () // parameters for getTodos, getTodos() has no parameters
             (fun okResponse -> Msg.GotTodos okResponse) // ('response -> Msg), convert ok response back to message
             (fun errorResponse -> Msg.GotError errorResponse) // (exn -> Msg), convert error response back to message
-    // ^ the lambda functions here are redundant
 
     // these commands will be executed after init
     let remainingCommands = Cmd.batch [ Cmd.ofMsg (SetInput ""); loadTodosFromServer ]
@@ -71,15 +56,9 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
     // log every update to console
     console.log ($"update: {msg}")
 
-    // helper to call api and convert any exception to a GotError message
-    let callApi apiMethod parameters mapSuccess =
-        Cmd.OfAsync.either
-            apiMethod
-            parameters
-            (function
-            | Error exn -> GotError(exn) // thrown on api error
-            | Ok(data) -> mapSuccess (data))
-            GotError // thrown on connection error
+    let callApi apiMethod parameters onSuccess =
+        // convert any error to a GotError message
+        Cmd.OfAsync.either apiMethod parameters onSuccess GotError
 
     match msg with
     | GotTodos todos -> { model with Todos = List.ofSeq todos }, []
@@ -91,7 +70,11 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         { model with Input = "" }, cmd
     | GotAddTodoResponse newTodo ->
         // update the model state with copy-and-update expression
-        { model with Todos = model.Todos @ [ newTodo ] }, [] // <- no more commands to execute
+        {
+            model with
+                Todos = model.Todos @ [ newTodo ]
+        },
+        [] // <- no more commands to execute
     | GotError(exn) ->
         window.alert (exn.Message)
         model, []
@@ -99,7 +82,11 @@ let update (msg: Msg) (model: Model) : Model * Cmd<Msg> =
         let cmd = callApi todosApi.removeTodo guid (fun _ -> GotRemoveTodoResponse(guid))
         model, cmd
     | GotRemoveTodoResponse(guid) ->
-        { model with Todos = model.Todos |> List.where (fun todo -> todo.Id <> guid) }, []
+        {
+            model with
+                Todos = model.Todos |> List.where (fun todo -> todo.Id <> guid)
+        },
+        []
 
 open Feliz.Bulma
 // open type Feliz.Html // if you don't want to write Html.<name>
@@ -114,7 +101,10 @@ let containerBox (model: Model) (dispatch: Msg -> unit) =
                     Html.li [
                         prop.style [ style.display.flex ]
                         prop.children [
-                            Html.p [ prop.text todo.Description; prop.style [ style.fontWeight.bold ] ]
+                            Html.p [
+                                prop.text todo.Description
+                                prop.style [ style.fontWeight.bold ]
+                            ]
                             Bulma.button.a [
                                 prop.style [
                                     // most length units are strongly typed in length.<name>

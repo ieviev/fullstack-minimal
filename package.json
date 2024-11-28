@@ -2,10 +2,9 @@
   "private": true,
   "scripts": {
     "build": "dotnet fable src/Client --noCache --sourceMaps --run vite build",
-    "start:client": "dotnet fable watch src/Client --sourceMaps --run vite",
-    "start:client-nocache": "dotnet fable watch src/Client --noCache --sourceMaps --run vite",
-    "start:client-localnetwork": "dotnet fable watch src/Client --sourceMaps --run vite --host",
-    "start:dev": "npm-run-all --parallel start:client start:server",
+    "start:client": "dotnet fable watch src/Client --noCache --sourceMaps --run vite --clearScreen false",
+    "start:client-docker": "dotnet tool restore; dotnet fable clean -y; env DOTNET_USE_POLLING_FILE_WATCHER=true dotnet fable watch src/Client",
+    "start:dev": "dotnet tool restore; npm-run-all --parallel start:client start:server",
     "start:server": "dotnet watch run --project ./src/Server/Server.fsproj"
   },
   "devDependencies": {
