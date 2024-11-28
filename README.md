@@ -10,6 +10,7 @@
 
 ```bash
 npm install
+dotnet tool restore
 dotnet fable src/Client --noCache
 ```
 
@@ -17,6 +18,9 @@ dotnet fable src/Client --noCache
 
 ```bash
 npm run start:dev
+# start client and server separately
+# npm run start:client
+# npm run start:server
 ```
 then open http://localhost:8080/ in the browser
 
