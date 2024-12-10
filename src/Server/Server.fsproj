@@ -13,8 +13,8 @@
     <ProjectReference Include="..\Shared\Shared.fsproj" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="Fable.Remoting.Giraffe" Version="5.14.0" />
-    <PackageReference Include="Fable.Remoting.Server" Version="5.32.0" />
+    <PackageReference Include="Fable.Remoting.Giraffe" Version="5.21.0" />
+    <PackageReference Include="Fable.Remoting.Server" Version="5.39.0" />
     <PackageReference Include="FSharp.Data" Version="6.4.0" />
     <PackageReference Include="Saturn" Version="0.16.1" />
   </ItemGroup>
