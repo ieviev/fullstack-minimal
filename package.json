@@ -2,6 +2,8 @@
   "private": true,
   "scripts": {
     "build": "dotnet fable src/Client --noCache --sourceMaps --run vite build",
+    "start:client-only": "dotnet fable watch src/Client --sourceMaps",
+    "start:vite-only": "vite --clearScreen false",
     "start:client": "dotnet fable watch src/Client --noCache --sourceMaps --run vite --clearScreen false",
     "start:client-docker": "dotnet tool restore; dotnet fable clean -y; env DOTNET_USE_POLLING_FILE_WATCHER=true dotnet fable watch src/Client",
     "start:dev": "dotnet tool restore; npm-run-all --parallel start:client start:server",
