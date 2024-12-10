@@ -36,6 +36,7 @@ let todosApi =
 
 // returns the initial model and a list of remaining commands to execute
 let init() : Model * Cmd<Msg> =
+    // JS.debugger() // invoke JS debugger
     let model = { Todos = []; Input = "" }
 
     console.log ("calling init") // example of logging to browser console
