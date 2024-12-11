@@ -17,7 +17,7 @@ type Msg =
     | RemoveTodo of System.Guid
     | AddTodo // <- starts async request to the server
     | GotAddTodoResponse of Todo // <- response from the server
-    | GotTodos of Todo seq
+    | GotTodos of Todo[]
     | GotRemoveTodoResponse of System.Guid
     | GotError of exn
 

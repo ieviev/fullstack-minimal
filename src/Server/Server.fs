@@ -33,7 +33,7 @@ let todosApi: Shared.ITodosApi = {
     getTodos =
         fun _ -> async {
             stdout.WriteLine $"server received getTodos"
-            return Storage.todos
+            return Storage.todos |> Seq.toArray
         }
     addTodo =
         fun todo -> async {

@@ -20,7 +20,7 @@ module Todo =
 
 // this type defines the shared API
 type ITodosApi = {
-    getTodos: unit -> Async<Todo seq>
+    getTodos: unit -> Async<Todo[]>
     addTodo: Todo -> Async<Todo>
     removeTodo: Guid -> Async<unit>
 }
