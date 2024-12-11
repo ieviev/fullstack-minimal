@@ -55,6 +55,9 @@ let apiHttpHandler: Giraffe.Core.HttpHandler =
     Remoting.createApi ()
     // |> Remoting.withRouteBuilder (fun typeName methodName -> sprintf $"/customApiUrl/%s{typeName}/%s{methodName}")
     // |> Remoting.withBinarySerialization // replaces json with msgpack; make sure to change this in both server and client
+    |> Remoting.withErrorHandler (fun exn info -> 
+        ErrorResult.Propagate(exn) // show exceptions to client
+    )
     |> Remoting.fromValue todosApi
     |> Remoting.buildHttpHandler
 
